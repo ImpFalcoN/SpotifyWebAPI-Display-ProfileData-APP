@@ -63,10 +63,10 @@ Comece excluindo o conteúdo do arquivo index.html e substituindo-o por um esque
 Dentro do corpo do nosso html, isto é, dentro da nossa tag body, vamos adicionar algumas marcações para mostrar os dados de perfil:
 
 ```html
-<h1>Display your Spotify profile data</h1>
+<h1>Exiba seus dados de perfil Spotify</h1>
 
-<section id="profile">
-<h2>Logged in as <span id="displayName"></span></h2>
+<section id="perfil">
+<h2>Logado como <span id="displayName"></span></h2>
 <span id="avatar"></span>
 <ul>
     <li>User ID: <span id="id"></span></li>
