@@ -48,10 +48,10 @@ Comece excluindo o conteúdo do arquivo index.html e substituindo-o por um esque
 
 ```html
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
     <head>
         <meta charset="utf-8">
-        <title>My Spotify Profile</title>
+        <title>Meu perfil Spotify</title>
         <script src="src/script.js" type="module"></script>
     </head>
     <body>
