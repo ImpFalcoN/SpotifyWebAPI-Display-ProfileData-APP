@@ -20,11 +20,16 @@ Nós vamos precisar registrar um novo app para gerar credenciais válidas - Vamo
 
 ## Criando um novo projeto
 
-Esse aplicativo usa o servidor de desenvolvimento Vite. Vamos criar esse novo projeto com o commando vite create e usar um templete default para nos dar um aplicativo basíco.
+Esse aplicativo usa o servidor de desenvolvimento Vite. Vamos criar esse novo projeto com o commando vite create e usar um templete default para nos dar um aplicativo basíco usando js.
+
+```
+npm create vite@latest spotify-profile-demo -- --template vanilla
+```
+
+Em alternativa podemos usar um template que faz uso de TypeScript.
 
 ```
 npm create vite@latest spotify-profile-demo -- --template vanilla-ts
-
 ```
 Mude o diretório usando o comando cd (change directory) para o diretório onde criamos o novo app, uma vez que criamos o app podemos rodar o servidor de desenvolvimento.
 
