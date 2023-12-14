@@ -20,11 +20,16 @@ Nós vamos precisar registrar um novo app para gerar credenciais válidas - Vamo
 
 ## Criando um novo projeto
 
-Esse aplicativo usa o servidor de desenvolvimento Vite. Vamos criar esse novo projeto com o commando vite create e usar um templete default para nos dar um aplicativo basíco.
+Esse aplicativo usa o servidor de desenvolvimento Vite. Vamos criar esse novo projeto com o commando vite create e usar um templete default para nos dar um aplicativo basíco usando js.
+
+```
+npm create vite@latest spotify-profile-demo -- --template vanilla
+```
+
+Em alternativa podemos usar um template que faz uso de TypeScript.
 
 ```
 npm create vite@latest spotify-profile-demo -- --template vanilla-ts
-
 ```
 Mude o diretório usando o comando cd (change directory) para o diretório onde criamos o novo app, uma vez que criamos o app podemos rodar o servidor de desenvolvimento.
 
@@ -32,7 +37,6 @@ Mude o diretório usando o comando cd (change directory) para o diretório onde 
 cd spotify-profile-demo
 npm install
 npm run dev
-
 ```
 O template default do vite cria alguns arquivos que nós não precisamos para essa demonstração, podemos deletar todos os arquivos que se encontram em ./src/ e ./public/
 
@@ -54,7 +58,6 @@ Comece excluindo o conteúdo do arquivo index.html e substituindo-o por um esque
         
     </body>
 </html>
-
 ```
 
 Dentro do corpo do nosso html, isto é, dentro da nossa tag body, vamos adicionar algumas marcações para mostrar os dados de perfil:
@@ -72,8 +75,7 @@ Dentro do corpo do nosso html, isto é, dentro da nossa tag body, vamos adiciona
     <li>Link: <a id="url" href="#"></a></li>
     <li>Profile Image: <span id="imgUrl"></span></li>
 </ul>
-</section>
- 
+</section> 
 ```
 Alguns elementos nesse bloco de código tem atributos de ID. Faremos o uso de identificadores para popular os elementos com dados retornados pela API.
 
