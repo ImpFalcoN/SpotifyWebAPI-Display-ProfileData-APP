@@ -190,3 +190,96 @@ async function generateCodeChallenge(codeVerifier) {
 
 Nesta função, um novo objeto URLSearchParams é criado, e nos adicionamos os parâmetros client_id, response_type, redirect_uri e scope. O parâmetro scope é uma [lista de permissões](https://developer.spotify.com/documentation/web-api/concepts/scopes) que nos estamos requisitando ao usuário.
 
+O **redirect_uri** é o URL para qual o Spotify redirecionará o usuário depois de autorizar o aplicativo. Neste caso estamos usando um URL que aponta para o nosso servidor de desenvolvimento local do Vite.
+
+Você também vai ver que estamos utilizando o [Verificador PKCE e Challenge data], estamos usando isso para verificar se nossa solicitação é autêntica. Estamos usando o armazenamento local para armazenar os dados do verificador, que funciona como uma senha para o processo de troca de token.
+
+Para evitar que o usuário fique preso em um loop de redirecionamento quando autenticar, precisamos verificar se o retorno da chamada contém um code. Para fazer isso, as três primeiras linhas do src/script.js devem ser modificadas assim:
+
+```JavaScript
+const clientId = "your_client_id";
+const params = new URLSearchParams(window.location.search);
+const code = params.get("code");
+
+if (!code) {
+    redirectToAuthCodeFlow(clientId);
+} else {
+    const accessToken = await getAccessToken(clientId, code);
+    const profile = await fetchProfile(accessToken);
+    populateUI(profile);
+}
+```
+
+Para garantir que a troca de token funcione, precisamos escrever a função getAcessToken:
+
+```JavaScript
+export async function getAccessToken(clientId: string, code: string): Promise<string> {
+    const verifier = localStorage.getItem("verifier");
+
+    const params = new URLSearchParams();
+    params.append("client_id", clientId);
+    params.append("grant_type", "authorization_code");
+    params.append("code", code);
+    params.append("redirect_uri", "http://localhost:5173/callback");
+    params.append("code_verifier", verifier!);
+
+    const result = await fetch("https://accounts.spotify.com/api/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params
+    });
+
+    const { access_token } = await result.json();
+    return access_token;
+}
+```
+
+Nesta função, inicializamos uma variavel com o verificador do nosso armazenamento local, e usamos o código retornado pela nossa chamada e o verificador para executar um Post na API do token Spotify. A API usa esses dois valores para verificar nossa solicitação e retorna um token de acesso.
+
+Agora, se rodarmos o comando `npm run dev`, e navergarmos até http://localhost:5173, somos redirecionados para a página de autorização do Spotify. se autorizarmos o aplicativo, seremos redirecionados de volta ao nosso aplicativo, mas nenhum dado será buscado e exibido.
+
+Para ajeitar isso, precisamos escrever a função fetchProfile, ela vai realizar a chamada para Web API e obter os dados do perfil:
+
+```JavaScript
+async function fetchProfile(token) {
+    const result = await fetch("https://api.spotify.com/v1/me", {
+        method: "GET", headers: { Authorization: `Bearer ${token}` }
+    });
+
+    return await result.json();
+}
+```
+
+Nesta função, a chamada para https://api.spotify.com/v1/me usando a função fetch para obter os dados do perfil. O Authorization está definido para Bearer ${token}, onde o token é o token de acesso que obtivemos com a função getTokenAcess.
+
+Se fizer um console.log para o resultado da chamada podemos ver que os dados são retornados da API para o console do nosso navegador:
+
+```JavaScript
+} else {
+    const profile = await fetchProfile(token);
+    console.log(profile); // Profile data logs to console
+    ...
+}
+```
+
+Finalmente e não menos importante precisamos popular nossa interface do usuário escrevendo a função populateUI:
+
+```JavaScript
+function populateUI(profile) {
+    document.getElementById("displayName").innerText = profile.display_name;
+    if (profile.images[0]) {
+        const profileImage = new Image(200, 200);
+        profileImage.src = profile.images[0].url;
+        document.getElementById("avatar").appendChild(profileImage);
+        document.getElementById("imgUrl").innerText = profile.images[0].url;
+    }
+    document.getElementById("id").innerText = profile.id;
+    document.getElementById("email").innerText = profile.email;
+    document.getElementById("uri").innerText = profile.uri;
+    document.getElementById("uri").setAttribute("href", profile.external_urls.spotify);
+    document.getElementById("url").innerText = profile.href;
+    document.getElementById("url").setAttribute("href", profile.href);
+}
+```
+
+Agora você pode executar a aplicação rodando `npm run dev` no terminal e navegar até http://localhost:5173 usando seu browser/navegador.
